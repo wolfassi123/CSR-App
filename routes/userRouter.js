@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
+var authenticate = require('../authenticate');
 const Users = require('../models/users');
 const userRouter = express.Router();
 
@@ -17,7 +17,7 @@ userRouter.route('/')
             }, (err) => next(err))
             .catch((err) => next(err));
     })
-    .post((req, res, next) => {
+    .post(authenticate.verifyuserSchema,(req, res, next) => {
         Users.create(req.body)
             .then((user) => {
                 console.log('User Created ', user);
@@ -27,11 +27,11 @@ userRouter.route('/')
             }, (err) => next(err))
             .catch((err) => next(err));
     })
-    .put((req, res, next) => {
+    .put(authenticate.verifyuserSchema,(req, res, next) => {
         res.statusCode = 403;
         res.end('PUT operation not supported on /users');
     })
-    .delete((req, res, next) => {
+    .delete(authenticate.verifyuserSchema,(req, res, next) => {
         Users.remove({})
             .then((resp) => {
                 res.statusCode = 200;
@@ -51,11 +51,11 @@ userRouter.route('/:userId')
             }, (err) => next(err))
             .catch((err) => next(err));
     })
-    .post((req, res, next) => {
+    .post(authenticate.verifyuserSchema,(req, res, next) => {
         res.statusCode = 403;
         res.end('POST operation not supported on /users/'+ req.params.userId);
     })
-    .put((req, res, next) => {
+    .put(authenticate.verifyuserSchema,(req, res, next) => {
         Users.findByIdAndUpdate(req.params.userId, {
             $set: req.body
         }, { new: true })
@@ -66,7 +66,7 @@ userRouter.route('/:userId')
             }, (err) => next(err))
             .catch((err) => next(err));
     })
-    .delete((req, res, next) => {
+    .delete(authenticate.verifyuserSchema,(req, res, next) => {
         Users.findByIdAndRemove(req.params.userId)
             .then((resp) => {
                 res.statusCode = 200;

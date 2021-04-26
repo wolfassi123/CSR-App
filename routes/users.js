@@ -25,7 +25,7 @@ router.route('/:userId')
 
 router.post('/signup', (req, res, next) => {
   //if (Admin.find({ name: req.email })) {
-  User.register(new User({ username: req.body.username, name: req.body.name, admin: req.body.admin }),
+  User.register(new User({ username: req.body.username, admin: req.body.admin }),
       req.body.password, (err, user) => {
         if(err) {
           res.statusCode = 500;
